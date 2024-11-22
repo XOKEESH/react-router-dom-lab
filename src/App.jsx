@@ -1,19 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import NavBar from './components/NavBar'
 import MailboxForm from './components/MailboxForm'
 import MailboxList from './components/MailboxList'
 import MailboxDetails from './components/MailboxDetails'
 
-const App = () => {
-  const [mailboxes, setMailboxes] = useState([])
+function App() {
+  const savedMailboxes = JSON.parse(localStorage.getItem('mailboxes')) || []
+  const [mailboxes, setMailboxes] = useState(savedMailboxes)
 
-  const addBox = (formData) => {
-    const newMailbox = {
-      _id: mailboxes.length + 1,
-      ...formData,
-    }
-    setMailboxes([...mailboxes, newMailbox])
+  useEffect(() => {
+    localStorage.setItem('mailboxes', JSON.stringify(mailboxes))
+  }, [mailboxes])
+
+  const addBox = (newBox) => {
+    const _id = mailboxes.length + 1
+    setMailboxes([...mailboxes, { ...newBox, _id }])
   }
 
   return (
